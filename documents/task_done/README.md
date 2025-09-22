@@ -235,6 +235,192 @@ src/
 - **Step 8**: Video effects và transitions
 - **Step 9**: Final video rendering và export
 
+## ✨ Hướng dẫn thêm tính năng chia đều thời gian voice cho 10 ảnh
+
+### Vấn đề cần giải quyết
+Bạn muốn tạo video từ voice + 10 ảnh, với mỗi ảnh hiển thị đều nhau theo thời lượng voice:
+- **Ví dụ**: Voice 60s + 10 ảnh → mỗi ảnh hiển thị 6s
+
+### Giải pháp kỹ thuật
+
+#### 1. Thêm functions vào `src/utils/functions.ts`:
+
+```typescript
+// Tính thời lượng audio từ URL/blob
+export const getAudioDurationFromUrl = (audioUrl: string): Promise<number> => {
+  return new Promise((resolve, reject) => {
+    const audio = new Audio();
+    audio.onloadedmetadata = () => resolve(audio.duration);
+    audio.onerror = () => reject(new Error('Không thể đọc audio'));
+    audio.src = audioUrl;
+  });
+};
+
+// Tính thời gian hiển thị cho mỗi ảnh
+export const calculateImageDisplayTimes = (
+  audioDuration: number,
+  imageCount: number = 10
+): { timePerImage: number; timeline: number[] } => {
+  const timePerImage = audioDuration / imageCount;
+  const timeline: number[] = [];
+
+  for (let i = 0; i <= imageCount; i++) {
+    timeline.push(i * timePerImage);
+  }
+
+  return {
+    timePerImage,
+    timeline // [0, 6, 12, 18, ...] cho audio 60s và 10 ảnh
+  };
+};
+
+// Format thời gian hiển thị (00:06)
+export const formatTime = (seconds: number): string => {
+  const mins = Math.floor(seconds / 60);
+  const secs = Math.floor(seconds % 60);
+  return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+};
+```
+
+#### 2. Cập nhật `ActionScript.vue` component:
+
+**Thêm vào data():**
+```javascript
+data() {
+  return {
+    // ... existing data
+    audioDuration: 0,
+    imageTimeline: [],
+    timePerImage: 0,
+    isAnalyzingAudio: false
+  };
+}
+```
+
+**Thêm method phân tích audio:**
+```javascript
+async analyzeAudioDuration() {
+  if (!this.audioUrl) return;
+
+  this.isAnalyzingAudio = true;
+  try {
+    this.audioDuration = await getAudioDurationFromUrl(this.audioUrl);
+    const result = calculateImageDisplayTimes(this.audioDuration, 10);
+    this.timePerImage = result.timePerImage;
+    this.imageTimeline = result.timeline;
+
+    console.log(`Audio: ${this.audioDuration}s, Mỗi ảnh: ${this.timePerImage}s`);
+  } catch (error) {
+    console.error('Lỗi phân tích audio:', error);
+  } finally {
+    this.isAnalyzingAudio = false;
+  }
+}
+```
+
+**Cập nhật handleTextToSpeech():**
+```javascript
+async handleTextToSpeech() {
+  // ... existing code tạo audio ...
+
+  if (!response.ok) {
+    throw new Error("Lỗi khi tạo giọng nói");
+  }
+
+  const audioBlob = await response.blob();
+  this.audioUrl = URL.createObjectURL(audioBlob);
+
+  // ✨ THÊM: Tự động phân tích thời lượng audio
+  await this.analyzeAudioDuration();
+}
+```
+
+#### 3. Cập nhật UI hiển thị thông tin timeline:
+
+**Thêm vào template, sau audio player:**
+```vue
+<!-- Timeline Information -->
+<div v-if="audioDuration > 0" class="mt-3">
+  <v-card variant="outlined" class="pa-3">
+    <h4 class="text-subtitle-1 mb-2">
+      <v-icon size="20" class="mr-1">mdi-timer</v-icon>
+      Timeline Video
+    </h4>
+    <div class="text-body-2 mb-2">
+      <strong>Tổng thời lượng:</strong> {{ formatTime(audioDuration) }}<br>
+      <strong>Mỗi ảnh hiển thị:</strong> {{ formatTime(timePerImage) }}<br>
+      <strong>Số ảnh:</strong> {{ imagePrompts.length }}/10
+    </div>
+
+    <!-- Timeline Preview -->
+    <v-chip
+      v-for="(time, index) in imageTimeline.slice(0, -1)"
+      :key="index"
+      size="small"
+      class="mr-1 mb-1"
+      :color="generatedImages[index] ? 'green' : 'grey'"
+    >
+      Ảnh {{ index + 1 }}: {{ formatTime(time) }}
+    </v-chip>
+  </v-card>
+</div>
+```
+
+#### 4. Thêm nút tạo video (chuẩn bị cho bước tiếp theo):
+
+```vue
+<!-- Video Generation Button -->
+<v-btn
+  v-if="audioDuration > 0 && Object.keys(generatedImages).length === 10"
+  color="purple"
+  text="Tạo Video"
+  variant="elevated"
+  block
+  class="mt-2"
+  prepend-icon="mdi-movie"
+  @click="createVideoFromImagesAndAudio"
+>
+  Tạo video từ {{ Object.keys(generatedImages).length }} ảnh
+</v-btn>
+```
+
+#### 5. Method tạo video (framework cho bước sau):
+
+```javascript
+async createVideoFromImagesAndAudio() {
+  if (!this.audioUrl || Object.keys(this.generatedImages).length < 10) {
+    alert('Cần có đủ audio và 10 ảnh để tạo video');
+    return;
+  }
+
+  alert(`Sẽ tạo video với:
+  - Audio: ${formatTime(this.audioDuration)}
+  - 10 ảnh, mỗi ảnh hiển thị ${formatTime(this.timePerImage)}
+  - Timeline: ${this.imageTimeline.map(t => formatTime(t)).join(', ')}
+
+  (Tính năng này cần FFmpeg.js để implement)`);
+}
+```
+
+### Workflow mới sau khi cập nhật:
+
+1. **Nhập script** → Chia script
+2. **Tạo voice** → 🆕 **Tự động phân tích thời lượng audio**
+3. **Tạo 10 prompts** → Tạo 10 ảnh
+4. **🆕 Hiển thị timeline**: Thời gian hiển thị mỗi ảnh
+5. **🆕 Nút "Tạo Video"**: Sẵn sàng cho bước tiếp theo
+
+### Kết quả đạt được:
+- ✅ Tự động tính thời gian hiển thị đều cho mỗi ảnh
+- ✅ Hiển thị timeline trực quan
+- ✅ Validation đủ audio + 10 ảnh
+- ✅ UI feedback rõ ràng
+- ✅ Chuẩn bị sẵn cho video generation
+
+### Bước tiếp theo (optional):
+- Sử dụng **FFmpeg.js** để merge audio + images thành video
+- Hoặc export data để xử lý với tools khác (Premiere, DaVinci)
+
 ### 🎯 Technical Debt
 - [ ] Add proper TypeScript types cho all components
 - [ ] Implement proper error boundaries
