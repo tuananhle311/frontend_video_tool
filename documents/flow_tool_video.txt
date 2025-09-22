@@ -1,0 +1,34 @@
+﻿STEP 1
+-Load 1 file kịch bản vào dưới dạng file txt. sau đó sẽ chia nhỏ kịch bản thành mỗi đoạn 1000 ký tự
+
+
+STEP 2
+-Mỗi file 1000 ký tự đấy - được đổi thành file âm thanh từ Text to Speech của AI elevanlabs (muốn để đổi được thì dùng token của elevanlabs và chạy proxy để xoay ip mạng, lưu ý có chỗ để chọn Select a voice giọng nào và chỉnh được setting (Speed, Stability, Similarity), Model) vì mỗi email mới đăng ký elavanlabs sẽ được sử dụng miễn phí 10000 ký tự nên dùng token của email đấy và Proxy để xoay IP mạng vì lí do Elevanlabs không cho sử dụng nhiều email miễn phí trên cùng 1 IP mạng.
+
+
+STEP 3
+-Chính file 1000 ký tự - nhập vào khung chat mới của GPT/GEMINI (đã được train trước - khi gửi 1 nội dung và thì AI trả về 10 prompt để tạo ảnh mô tả toàn bộ nội dung đã gửi) 
+
+
+STEP 4
+-Sau khi nhận được kết quả danh sách prompt của file 1000 ký tự .Thì dùng Gemini để tạo 10 ảnh từ 10 prompt vừa tạo.
+
+
+STEP 5
+-Dùng file âm thanh đã tạo từ STEP 2 và ảnh đã tạo từ STEP 4 ghép lại với nhau (ví dụ âm thanh 60s thì cứ 6s sẽ dùng 1 ảnh. sắp xếp từ ảnh 1 tới hết ảnh 10 để khớp với độ dài của file âm thanh)
+
+
+STEP 6
+-Ghép hết tất cả file 1000 ký tự thành 1 file 
+
+
+STEP 7
+- Tạo phụ đề cho video dựa vào file âm thanh
+
+
+STEP 8
+-Thêm hiêu ứng cho toàn bộ video (hiệu ứng cho hình ảnh)
+
+
+STEP 9
+-Render video

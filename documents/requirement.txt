@@ -1,0 +1,59 @@
+﻿THÀNH PHẦN TẠO NÊN VIDEO:
+* file âm thanh -> được tạo bằng AI (elevanlabs. hoặc minimax- do 2 con này là bắt buộc vì giọng giống người thật nhất trên thị thường)
+
+
+* Hình ảnh/video -> minh hoạ/mô tả cho voice để người xem hình dung được 
+hình ảnh thì có thể dùng SORA của chat GPT (gói plus tạo đc 200 ảnh/day còn tk free thì đc 4-5 ảnh/day), hoặc có thể dùng ảnh của Leonardo.AI (con này ưu tiên vì tạo được ảnh HD- gói ngon nhất là 60$/tháng nhưng có tụi pay rẻ 960k/tháng , con này thường là t mua chung với vài người). hoặc dùng dream.AI của capcut cũng tạm tạm . hoặc xài ảnh free của Gemini và con whisk của google cũng đang cho xài free 
+   * mấy cái này thấy bọn có gọi API để tạo - lấy token lấy cookie để chạy mà tuỳ con bên mà token sống bao lâu nữa hết phải lấy lại á
+
+
+   * còn về video thì có Veo-3 đang xài dạng gói edu 1 năm mỗi tháng nó cho 1000 điểm- tạo 1 lần đc 1video 8s và tốn 20 điểm/ con này thì đang có tut fake thẻ sv để bú free/ giá thị trường là 20-50k/con ….. Ngoài ra Leonado.ai  gg studio cũng tạo đc video
+
+
+TUỲ VÀO CHỦ ĐỀ MÀ NHU CẦU XÀI CON AI NÀO ĐỂ TẠO ẢNH NHÉ. CHỦ YẾU MÌNH CHƠI SLIDE ẢNH THÔI CÒN VIDEO KHÔNG QUÁ QUAN TRỌNG ĐÂU NHA
+
+
+về tool thì muốn là mình nhập kịch bản vào và nó sẽ trả video cho mình - là oke
+
+
+   * nạp kịch bản thì từ kịch bản nó sẽ đổi thành giọng voice qua  con elevanlabs (thường nó sẽ tách thành mỗi đoạn 1000 ký tự nhá)
+
+- sau đó từ mỗi đoạn ký tự đó nó tạo thành ảnh và dùng ảnh đó ghép ngược lại voice để khớp về mặt hình ảnh 
+
+- ví dụ 1000 ký tự là 60s và t muốn có 6 tấm ảnh - thì có 2 phương án
+  + PA1: bốc thẳng nội dung của 1000 ký tự kia tạo ảnh - tuỳ con AI mà tạo đủ 6 ảnh (kiểu như spam 6 ảnh đó na ná giống nhau cũng được)/ cái này nếu làm mấy chủ đề như kinh thánh/ phật giáo nó dễ hơn vì ảnh nào cũng có chúa là đc =)) 
+   * PA2: là quăng 1k ký tự đó vào GPT hoặc GEMINI gì đó và kêu nó trả lại promtp (này train sẵn chỉ cần nhập nội dung vào và nó trả lại prompt theo từng ô) rồi lấy nó gán qua tạo ảnh 
+cuối cùng là cứ ghép như vậy cho đến khi đủ video hết kb video là render video 
+
+
+-nếu chèn được sub vào video luôn thì càng tốt
+   *   link ví dụ: https://www.youtube.com/watch?v=qNZrM_ye5yw chỉ yếu là đánh mấy key full AI thôi 
+https://www.youtube.com/watch?v=kEcpeGEHngw&t=11s
+
+
+
+
+bth sẽ dùng capcut đẻ chèo hiệu ứng cho video và tạo sub rồi render
+tool mình muốn làm t có nghe được có đội thuê code của ấn độ- bọn nó chạy 20 bước là ra video á , mà nghe đồn render bằng Python   
+
+
+
+
+
+
+  tool tham khảo 
+   elevan: https://drive.google.com/file/d/1NWcpEi-799HtEjPerOcTnmhcHWg9DRNY/view?usp=sharing
+
+
+
+
+NGOÀI RA CẦN 2 TOOL KHÁC 
+
+
+-tool tự động đăng bài rồi tự bắt máy - mục đích để treo video lúc 2-3h sáng
+https://drive.google.com/file/d/1wTipgBeaUWoGP8N_zK9mNrxYarFVzMD1/view?usp=sharing
+
+
+
+
+- Tool tự động đăng video hàng loạt tài khoản tiktok beta [mình loin 10 tài khoảng tiktok vào tool sau đó load 1 video lên thì nó sẽ tự động đăng video lên 10 tài khoảng kia] mục đích để test được kênh nào ngon để mình kéo video cho youtube ngoài ra có thể đánh bên insta hoặc X miễn có tool là nhàng . win được cái này là win mẹ luôn kênh đó
