@@ -277,7 +277,7 @@ const fetchGeminiUsage = async () => {
       throw new Error(`API Error: ${response.status}`);
     }
 
-    const data = await response.json();
+    await response.json();
 
     // Nếu API key hợp lệ, set connected = true
     geminiUsage.value.isConnected = true;
@@ -379,7 +379,7 @@ const runFullWorkflow = async () => {
 
   } catch (error) {
     console.error("Workflow error:", error);
-    alert(`Lỗi trong workflow: ${error.message}`);
+    alert(`Lỗi trong workflow: ${error instanceof Error ? error.message : String(error)}`);
   } finally {
     isRunning.value = false;
     workflowStep.value = 0;
